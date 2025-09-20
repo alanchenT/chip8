@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "chip8_core/Cargo.toml",
+        "desktop/Cargo.toml",
+        "wasm/Cargo.toml"
+    ]
+}
