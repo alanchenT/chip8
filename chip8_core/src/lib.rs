@@ -307,7 +307,7 @@ impl Emulator {
             (8, _, _, 0xE) => {
                 let x = digit2 as usize;
 
-                let leftmost_bit = self.v_regs[x] & 0x80;
+                let leftmost_bit = (self.v_regs[x] >> 7) & 1;
 
                 self.v_regs[x] <<= 1;
                 self.v_regs[0xF] = leftmost_bit;
@@ -369,7 +369,7 @@ impl Emulator {
                         let x = (x_coord + pixel_idx) as usize % SCREEN_WIDTH;
                         let y = (y_coord + row_idx) as usize % SCREEN_HEIGHT;
 
-                        let screen_idx = SCREEN_WIDTH * y + x;
+                        let screen_idx = x + SCREEN_WIDTH * y;
 
                         did_flip |= self.screen[screen_idx];
                         self.screen[screen_idx] ^= true; // Toggle the pixel
@@ -446,7 +446,7 @@ impl Emulator {
             (0xF, _, 2, 9) => {
                 let x = digit2 as usize;
                 let which_sprite = self.v_regs[x] as u16;
-                self.i_reg = 0 + which_sprite * 5; // Sprites are 5 bytes each and stored starting at 0x0
+                self.i_reg = which_sprite * 5; // Sprites are 5 bytes each and stored starting at 0x0
             }
 
             // BCD: Store value in VREG X as a BCD in RAM. One byte is used for each digit in base 10, so this will always use 3 bytes.

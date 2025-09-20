@@ -12,7 +12,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-const SCALE: u32 = 15;
+const SCALE: u32 = 16;
 const WINDOW_WIDTH: u32 = (SCREEN_WIDTH as u32) * SCALE; // SDL2 requires u32
 const WINDOW_HEIGHT: u32 = (SCREEN_HEIGHT as u32) * SCALE;
 
@@ -36,7 +36,7 @@ fn draw_screen(emulator: &Emulator, canvas: &mut Canvas<Window>) {
 
         // Get 2D position from index
         let x_coord = (idx % SCREEN_WIDTH) as u32;
-        let y_coord = (idx / SCREEN_HEIGHT) as u32;
+        let y_coord = (idx / SCREEN_WIDTH) as u32;
 
         // Draw white pixel
         let rect = Rect::new(
