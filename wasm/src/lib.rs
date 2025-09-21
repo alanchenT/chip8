@@ -1,3 +1,6 @@
+mod audio;
+use audio::Audio;
+
 use chip8_core::*;
 use js_sys::Uint8Array;
 use wasm_bindgen::prelude::*;
@@ -50,6 +53,16 @@ impl EmulatorWasm {
             .unwrap();
 
         Ok(EmulatorWasm { chip8, ctx })
+    }
+
+    pub fn init_audio(&mut self) {
+        match Audio::new().ok() {
+            None => self.chip8.set_audio_player(None),
+            Some(audio) => {
+                audio.resume();
+                self.chip8.set_audio_player(Some(Box::new(audio)));
+            }
+        }
     }
 
     // Wrappers

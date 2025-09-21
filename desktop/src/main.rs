@@ -1,3 +1,6 @@
+mod audio;
+use audio::Audio;
+
 use chip8_core::*;
 
 use sdl2::{
@@ -119,6 +122,9 @@ fn main() {
 
     rom.read_to_end(&mut buffer).unwrap();
     chip8.load(&buffer);
+
+    let audio_player = Audio::new().unwrap();
+    chip8.set_audio_player(Some(Box::new(audio_player)));
 
     let mut next_tick_time = Instant::now(); // Loop runs at 60 Hz
     'gameloop: loop {

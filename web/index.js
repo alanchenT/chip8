@@ -4,6 +4,7 @@ const WIDTH = 64
 const HEIGHT = 32
 const SCALE = 15
 const TICKS_PER_FRAME = 10
+const BEEP_FREQUENCY = 440
 
 let animFrame = 0
 
@@ -19,7 +20,6 @@ function clearCanvas() {
     ctx.fillStyle = "black"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
-
 clearCanvas()
 
 function mainLoop(emulator) {
@@ -56,6 +56,8 @@ async function run() {
             window.cancelAnimationFrame(animFrame)
         }
 
+        // Resume audio context
+
         let file = event.target.files[0]
         if (!file) {
             alert("Failed to open file")
@@ -69,6 +71,7 @@ async function run() {
 
             const rom = new Uint8Array(buffer)
 
+            chip8.init_audio()
             chip8.reset()
             chip8.load_game(rom)
 

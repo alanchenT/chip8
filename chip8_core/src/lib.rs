@@ -32,6 +32,11 @@ const FONTSET: [u8; FONTSET_SIZE] = [
 
 type Opcode = u16;
 
+pub trait AudioPlayer {
+    fn play(&self);
+    fn pause(&self);
+}
+
 pub struct Emulator {
     program_counter: u16,
     ram: [u8; RAM_SIZE_BYTES],
@@ -46,6 +51,8 @@ pub struct Emulator {
 
     delay_timer: u8,
     sound_timer: u8,
+
+    audio_player: Option<Box<dyn AudioPlayer>>,
 }
 
 impl Emulator {
@@ -64,6 +71,8 @@ impl Emulator {
 
             delay_timer: 0,
             sound_timer: 0,
+
+            audio_player: None,
         };
 
         // Load font sprites into RAM
@@ -114,16 +123,24 @@ impl Emulator {
         self.execute(opcode);
     }
 
+    pub fn set_audio_player(&mut self, player: Option<Box<dyn AudioPlayer>>) {
+        self.audio_player = player;
+    }
+
     pub fn tick_timers(&mut self) {
         if self.delay_timer > 0 {
             self.delay_timer -= 1;
         }
 
-        if self.sound_timer > 0 {
-            if self.sound_timer == 1 {
-                //
+        if let Some(player) = &self.audio_player {
+            if self.sound_timer > 0 {
+                player.play(); // Beep
+            } else {
+                player.pause(); // Stop beeping
             }
+        }
 
+        if self.sound_timer > 0 {
             self.sound_timer -= 1;
         }
     }
